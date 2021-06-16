@@ -1,31 +1,46 @@
 import React, { useReducer } from 'react';
+import cx from 'classnames';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { SIGN_UP_SCHEMA } from 'utils/validationSchemas';
 import style from './SignUpForm.module.scss';
 import FormInput from './FormInput';
-import constants from '../../../constants';
-import { reducer } from './reducer';
-
 const initialValues = {
-  firstname: '',
-  lastname: '',
+  firstName: '',
+  lastName: '',
   email: '',
   password: '',
 };
 
 function SignUpForm (props) {
-  const [state, dispatch] = useReducer(reducer, initialValues);
+
 
   const submitHandler = event => {
     const { registerUser } = props;
     event.preventDefault();
-    registerUser({ ...state });
+    console.log('Hello')
+    registerUser();
   };
-
-  const handleChange = ({ target: { name, value } }) => {
-    dispatch({ name, value });
-  };
-  const { firstname, lastname, email, password } = state;
+  
   return (
-    <form className={style.container} onSubmit={submitHandler}>
+    <>
+    <Formik initialValues={initialValues} validationSchema={SIGN_UP_SCHEMA} onSubmit={submitHandler}>
+      {formikProps => {
+        return (
+          <Form className={style.container}>
+            <Field type='text' component={FormInput} name='firstName' placeholder='first name' className={style.input} />
+            <ErrorMessage name='firstName' component='span'/>
+            <Field component={FormInput} name='lastName' placeholder='last name' className={style.input}/>
+            <ErrorMessage name='lastName' component='span'/>
+            <Field component={FormInput} name='email' placeholder='email' className={style.input}/>
+            <ErrorMessage name='email' component='span'/>
+            <Field type='password' component={FormInput} name='password' placeholder='password' className={style.input}/>
+            <ErrorMessage name='password' component='span'/>
+            <Field type='submit' value='submit' />
+          </Form>
+        );
+      }}
+    </Formik>
+    {/*<form className={style.container} onSubmit={submitHandler}>
       <FormInput
         name='firstname'
         value={firstname}
@@ -57,8 +72,9 @@ function SignUpForm (props) {
         type='password'
       />
       <input className={style.input} type='submit' />
-    </form>
-  );
+    </form>*/}
+    </>
+    );
 }
 /*
 class SignUpForm extends Component {
